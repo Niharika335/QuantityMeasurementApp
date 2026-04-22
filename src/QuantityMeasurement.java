@@ -1,9 +1,11 @@
-public class QuantityMeasurement {
+public class QuantityMeasurement{
 
-    // Step 1: Enum for units
+    // Step 1: Extended Enum (base unit = FEET)
     enum LengthUnit {
         FEET(1.0),
-        INCH(1.0 / 12.0); // 1 inch = 1/12 feet
+        INCH(1.0 / 12.0),          // 1 inch = 1/12 feet
+        YARD(3.0),                 // 1 yard = 3 feet
+        CENTIMETER(0.0328084);     // 1 cm ≈ 0.0328084 feet
 
         private final double toFeetFactor;
 
@@ -16,7 +18,7 @@ public class QuantityMeasurement {
         }
     }
 
-    // Step 2: Single class for all units
+    // Generic class (same as UC3)
     static class QuantityLength {
         private final double value;
         private final LengthUnit unit;
@@ -29,41 +31,31 @@ public class QuantityMeasurement {
             this.unit = unit;
         }
 
-        // Convert to base unit (feet)
         private double toFeet() {
             return unit.toFeet(value);
         }
 
-        // Equality check
         @Override
         public boolean equals(Object obj) {
-
-            // Reflexive
             if (this == obj) return true;
-
-            // Null + type check
             if (obj == null || getClass() != obj.getClass()) return false;
 
             QuantityLength other = (QuantityLength) obj;
 
-            // Compare after conversion
             return Double.compare(this.toFeet(), other.toFeet()) == 0;
         }
     }
 
-    // Main method (demo)
+    // Demo
     public static void main(String[] args) {
 
-        QuantityLength q1 = new QuantityLength(1.0, LengthUnit.FEET);
-        QuantityLength q2 = new QuantityLength(12.0, LengthUnit.INCH);
+        System.out.println(new QuantityLength(1.0, LengthUnit.YARD)
+                .equals(new QuantityLength(3.0, LengthUnit.FEET)));
 
-        System.out.println("Input: Quantity(1.0, \"feet\") and Quantity(12.0, \"inches\")");
-        System.out.println("Output: Equal (" + q1.equals(q2) + ")");
+        System.out.println(new QuantityLength(1.0, LengthUnit.YARD)
+                .equals(new QuantityLength(36.0, LengthUnit.INCH)));
 
-        QuantityLength q3 = new QuantityLength(1.0, LengthUnit.INCH);
-        QuantityLength q4 = new QuantityLength(1.0, LengthUnit.INCH);
-
-        System.out.println("Input: Quantity(1.0, \"inch\") and Quantity(1.0, \"inch\")");
-        System.out.println("Output: Equal (" + q3.equals(q4) + ")");
+        System.out.println(new QuantityLength(1.0, LengthUnit.CENTIMETER)
+                .equals(new QuantityLength(0.393701, LengthUnit.INCH)));
     }
 }
